@@ -1,0 +1,170 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>JAMB 2026 CBT Simulator</title>
+  <style>
+    body { font-family: Arial, sans-serif; background: #f9f9f9; margin: 0; padding: 0; }
+    header { background: #004080; color: #fff; padding: 10px; text-align: center; }
+    .container { padding: 20px; }
+    .timer { font-weight: bold; }
+    .subject-tabs { display: flex; flex-wrap: wrap; margin-bottom: 10px; }
+    .subject-tabs button { padding: 10px 15px; margin: 5px; background: #007bff; color: white; border: none; cursor: pointer; border-radius: 5px; }
+    .subject-tabs button.active { background: #0056b3; }
+    .question-box { background: white; padding: 20px; border-radius: 5px; box-shadow: 0 0 5px rgba(0,0,0,0.1); }
+    .navigation { margin-top: 20px; }
+    .navigation button { padding: 10px 15px; margin: 5px; border: none; background: #28a745; color: white; border-radius: 5px; cursor: pointer; }
+    .navigation button.quit { background: #dc3545; }
+    .calculator { position: fixed; bottom: 10px; right: 10px; background: white; padding: 10px; border: 1px solid #ccc; border-radius: 5px; display: none; }
+    .calculator input { width: 100%; margin-bottom: 5px; }
+    #loading { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.8); text-align: center; padding-top: 200px; font-size: 24px; }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>JAMB 2026 CBT Simulator</h1>
+  <div class="timer">Time Left: <span id="timer">2:00:00</span></div>
+</header>
+
+<div class="container">
+  <div id="instruction">
+    <h2>Instructions</h2>
+    <p>Read the questions carefully. You have 2 hours to complete the exam. Use the tabs to switch subjects.</p>
+    <button onclick="startExam()">Start Exam</button>
+  </div>
+
+  <div id="exam" style="display: none;">
+    <div class="subject-tabs" id="subjectTabs"></div>
+    <div class="question-box" id="questionBox">Question will appear here...</div>
+    <div class="navigation">
+      <button onclick="prevQuestion()">Previous</button>
+      <button onclick="nextQuestion()">Next</button>
+      <button onclick="submitExam()">Submit</button>
+      <button class="quit" onclick="quitExam()">Quit</button>
+    </div>
+  </div>
+</div>
+
+<div class="calculator" id="calculator">
+  <input type="text" id="calcDisplay" readonly />
+  <div>
+    <button onclick="appendCalc('1')">1</button>
+    <button onclick="appendCalc('2')">2</button>
+    <button onclick="appendCalc('3')">3</button>
+    <button onclick="appendCalc('+')">+</button>
+  </div>
+  <div>
+    <button onclick="appendCalc('4')">4</button>
+    <button onclick="appendCalc('5')">5</button>
+    <button onclick="appendCalc('6')">6</button>
+    <button onclick="appendCalc('-')">-</button>
+  </div>
+  <div>
+    <button onclick="appendCalc('7')">7</button>
+    <button onclick="appendCalc('8')">8</button>
+    <button onclick="appendCalc('9')">9</button>
+    <button onclick="appendCalc('*')">*</button>
+  </div>
+  <div>
+    <button onclick="appendCalc('0')">0</button>
+    <button onclick="calculate()">=</button>
+    <button onclick="clearCalc()">C</button>
+    <button onclick="appendCalc('/')">/</button>
+  </div>
+</div>
+
+<button style="position: fixed; bottom: 70px; right: 10px;" onclick="toggleCalculator()">Calculator</button>
+<div id="loading">Loading results...</div>
+
+<script>
+  let timerInterval;
+  function startExam() {
+    document.getElementById('instruction').style.display = 'none';
+    document.getElementById('exam').style.display = 'block';
+    startTimer(2 * 60 * 60);
+    loadSubjects();
+  }
+
+  function startTimer(duration) {
+    let timer = duration, hours, minutes, seconds;
+    timerInterval = setInterval(function () {
+      hours = parseInt(timer / 3600, 10);
+      minutes = parseInt((timer % 3600) / 60, 10);
+      seconds = parseInt(timer % 60, 10);
+      document.getElementById('timer').textContent = hours + ":" + minutes + ":" + seconds;
+      if (--timer < 0) {
+        clearInterval(timerInterval);
+        submitExam();
+      }
+    }, 1000);
+  }
+
+  function loadSubjects() {
+    const subjects = ["Use of English", "Mathematics", "Commerce", "Biology"];
+    const subjectTabs = document.getElementById('subjectTabs');
+    subjectTabs.innerHTML = '';
+    subjects.forEach((subject, index) => {
+      const btn = document.createElement('button');
+      btn.textContent = subject;
+      btn.onclick = () => showQuestions(subject);
+      if (index === 0) btn.classList.add('active');
+      subjectTabs.appendChild(btn);
+    });
+    showQuestions(subjects[0]);
+  }
+
+  function showQuestions(subject) {
+    document.querySelectorAll('.subject-tabs button').forEach(btn => btn.classList.remove('active'));
+    Array.from(document.querySelectorAll('.subject-tabs button')).find(btn => btn.textContent === subject).classList.add('active');
+    document.getElementById('questionBox').innerHTML = `<h3>${subject}</h3><p>[Sample Question for ${subject}]</p>`;
+  }
+
+  function prevQuestion() {
+    alert("Previous question...");
+  }
+
+  function nextQuestion() {
+    alert("Next question...");
+  }
+
+  function submitExam() {
+    document.getElementById('loading').style.display = 'block';
+    setTimeout(() => {
+      document.getElementById('loading').style.display = 'none';
+      alert("Results loaded!");
+    }, 5000);
+  }
+
+  function quitExam() {
+    if (confirm("Are you sure you want to quit the exam?")) {
+      location.reload();
+    }
+  }
+
+  function toggleCalculator() {
+    const calc = document.getElementById('calculator');
+    calc.style.display = calc.style.display === 'block' ? 'none' : 'block';
+  }
+
+  function appendCalc(val) {
+    document.getElementById('calcDisplay').value += val;
+  }
+
+  function calculate() {
+    try {
+      document.getElementById('calcDisplay').value = eval(document.getElementById('calcDisplay').value);
+    } catch {
+      alert("Invalid calculation");
+    }
+  }
+
+  function clearCalc() {
+    document.getElementById('calcDisplay').value = '';
+  }
+</script>
+
+</body>
+</html>

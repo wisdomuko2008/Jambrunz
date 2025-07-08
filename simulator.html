@@ -1,0 +1,80 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>JAMB CBT 2026 - Real Questions</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body { font-family: Arial, sans-serif; background: #f5f5f5; padding: 20px; }
+    .question { background: white; padding: 15px; margin-bottom: 15px; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+    .question h3 { margin-bottom: 10px; }
+    #submitBtn { background: #007bff; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; }
+    #submitBtn:disabled { background: #aaa; }
+    #result { margin-top: 20px; font-weight: bold; font-size: 18px; }
+    #loading { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+               background: rgba(255,255,255,0.95); z-index: 9999; align-items: center; justify-content: center; flex-direction: column; }
+    .spinner {
+      border: 4px solid #f3f3f3; border-top: 4px solid #007bff;
+      border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <h2>JAMB CBT 2026 Simulator</h2>
+  <div id="quiz"></div>
+  <button id="submitBtn" onclick="handleSubmit()">Submit</button>
+
+  <div id="loading" class="loading">
+    <div class="spinner"></div>
+    <p>Calculating your result...</p>
+  </div>
+
+  <div id="result"></div>
+
+  <script>
+    const realQuestions = {"English": [{"q": "Choose the option that best completes the sentence:\n\nIf I _______ him yesterday, I would have told him the truth.", "options": ["saw", "have seen", "had seen", "see"], "a": "had seen"}, {"q": "From the passage below, what can be inferred as the author's main concern?\n\n'Pollution in urban cities is becoming uncontrollable, and the effects on public health are alarming...'", "options": ["Urban cities are too populated.", "Pollution poses serious health risks.", "Public transport is responsible for pollution.", "People are unaware of pollution."], "a": "Pollution poses serious health risks."}], "Mathematics": [{"q": "Solve for x: 2x + 3 = 11.", "options": ["4", "5", "6", "7"], "a": "4"}, {"q": "What is the value of \u221a81?", "options": ["7", "8", "9", "10"], "a": "9"}], "Biology": [{"q": "Which of the following is a function of the nucleus in a cell?", "options": ["Protein synthesis", "Energy production", "Control of cell activities", "Transport of materials"], "a": "Control of cell activities"}, {"q": "The basic unit of life is the:", "options": ["Organ", "Tissue", "Cell", "Nucleus"], "a": "Cell"}], "Government": [{"q": "What is the main function of the legislature?", "options": ["Implement laws", "Interpret laws", "Make laws", "Enforce laws"], "a": "Make laws"}, {"q": "Nigeria became a republic in:", "options": ["1960", "1963", "1979", "1999"], "a": "1963"}]};
+
+    let allQuestions = [];
+    for (let subject in realQuestions) {
+      const qs = realQuestions[subject];
+      allQuestions = allQuestions.concat(qs.map(q => ({
+        ...q,
+        subject
+      })));
+    }
+
+    // Shuffle questions
+    allQuestions.sort(() => 0.5 - Math.random());
+
+    const quizDiv = document.getElementById("quiz");
+
+    allQuestions.forEach((q, i) => {
+      const div = document.createElement("div");
+      div.className = "question";
+      div.innerHTML = `<h3>Q${i+1} [${q.subject}]: ${q.q}</h3>` +
+                      q.options.map(opt =>
+                        `<label><input type="radio" name="q${i}" value="${opt}"> ${opt}</label><br>`
+                      ).join("");
+      quizDiv.appendChild(div);
+    });
+
+    function handleSubmit() {
+      document.getElementById("submitBtn").disabled = true;
+      document.getElementById("loading").style.display = "flex";
+      setTimeout(() => {
+        let score = 0;
+        allQuestions.forEach((q, i) => {
+          const selected = document.querySelector(`input[name='q${i}']:checked`);
+          if (selected && selected.value === q.a) score++;
+        });
+        document.getElementById("loading").style.display = "none";
+        document.getElementById("result").textContent = `✅ You scored ${score} out of ${allQuestions.length}`;
+      }, 10000);
+    }
+  </script>
+</body>
+</html>
