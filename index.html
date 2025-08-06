@@ -3,106 +3,132 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>JAMB 2026 | Flexi Tutors</title>
+  <title>Result Checker</title>
   <style>
     body {
-      font-family: Arial, sans-serif;
       margin: 0;
-      background: #f3f3f3;
-      color: #333;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #74ebd5, #ACB6E5);
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .card {
+      background: #fff;
+      padding: 40px 30px;
+      border-radius: 16px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      width: 100%;
+      max-width: 400px;
       text-align: center;
     }
-    header {
-      background: #004aad;
-      color: white;
-      padding: 1em 0;
+
+    h2 {
+      margin-bottom: 25px;
+      color: #333;
     }
-    nav a {
-      color: white;
-      margin: 0 1em;
-      text-decoration: none;
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      margin-bottom: 20px;
+      text-align: left;
     }
-    .hero {
-      padding: 2em;
+
+    .form-group label {
+      margin-bottom: 8px;
+      font-weight: 600;
     }
-    .countdown, .testimonials, .faq, .study-tips, .newsletter, .chat {
-      margin: 2em 0;
-      padding: 1em;
-      background: white;
+
+    .form-group input {
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+
+    .btn {
+      padding: 12px;
+      background-color: #3498db;
+      color: #fff;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+      width: 100%;
+      transition: background-color 0.3s;
+    }
+
+    .btn:hover {
+      background-color: #2980b9;
+    }
+
+    #result {
+      margin-top: 25px;
+      padding: 15px;
       border-radius: 8px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-      max-width: 800px;
-      margin-left: auto;
-      margin-right: auto;
+      font-size: 0.95rem;
+      display: none;
     }
-    .floating-help {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: #004aad;
-      color: white;
-      padding: 1em;
-      border-radius: 50%;
-      font-size: 20px;
-      text-decoration: none;
+
+    .success {
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .error {
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
     }
   </style>
 </head>
 <body>
-  <header>
-    <h1>Flexi Tutors - JAMB 2026</h1>
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="simulator.html">Simulator</a>
-      <a href="login.html">Login</a>
-      <a href="signup.html">Sign Up</a>
-    </nav>
-  </header>
-  <div class="hero">
-    <h2>Get Ready for JAMB 2026!</h2>
-    <div class="countdown">
-      <h3>Countdown to Exam:</h3>
-      <p id="timer">Loading...</p>
+  <div class="card">
+    <h2>WAEC Result Checker</h2>
+    <div class="form-group">
+      <label for="pin">Enter your PIN</label>
+      <input type="text" id="pin" placeholder="e.g. 1234" />
     </div>
-    <div class="testimonials">
-      <h3>What Our Students Say</h3>
-      <p>⭐⭐⭐⭐⭐ “Flexi Tutors helped me score 310 in JAMB!” - Joy U.</p>
-    </div>
-    <div class="faq">
-      <h3>FAQs</h3>
-      <p><strong>Q:</strong> Is this free? <br><strong>A:</strong> Yes, 100% free!</p>
-    </div>
-    <div class="study-tips">
-      <h3>Study Tips</h3>
-      <p>Revise past questions, take mock tests and follow a schedule.</p>
-    </div>
-    <div class="newsletter">
-      <h3>Subscribe to Updates</h3>
-      <input type="email" placeholder="Enter your email" />
-      <button>Subscribe</button>
-    </div>
-    <div class="chat">
-      <h3>Need Help?</h3>
-      <p>Reach us anytime via the live chat below.</p>
-    </div>
+    <button class="btn" onclick="checkPin()">Load PIN</button>
+    <div id="result"></div>
   </div>
-  <a class="floating-help" href="#">?</a>
+
   <script>
-    const timerElement = document.getElementById("timer");
-    const targetDate = new Date("April 19, 2026 08:00:00").getTime();
-    setInterval(() => {
-      const now = new Date().getTime();
-      const distance = targetDate - now;
-      if (distance < 0) {
-        timerElement.innerHTML = "Exam time!";
-        return;
+    function checkPin() {
+      const pin = document.getElementById("pin").value.trim();
+      const resultDiv = document.getElementById("result");
+
+      const validPins = {
+        "2769": { serial: "000xxxxx", pin: "000xxxxx" },
+        "2480": { serial: "000xxxxx", pin: "000xxxxx" },
+        "3296": { serial: "000xxxxx", pin: "000xxxxx" },
+        "2984": { serial: "000xxxxx", pin: "000xxxxx"},
+        "3180": { serial: "000xxxxx", pin: "000xxxxx"},
+        "0161": { serial: "000xxxxx", pin: "000xxxxx"},
+        "7112": { serial: "000xxxxx", pin: "000xxxxx"},
+        "9876": { serial: "000xxxxx", pin: "000xxxxx"},
+      };
+
+      if (validPins[pin]) {
+        resultDiv.className = "success";
+        resultDiv.innerHTML = `
+          <strong>✔ WAEC Result Checker Details:</strong><br>
+          Serial Number: ${validPins[pin].serial}<br>
+          e-PIN: ${validPins[pin].pin}
+        `;
+      } else {
+        resultDiv.className = "error";
+        resultDiv.innerHTML = "❌ Invalid PIN. Please try again.";
       }
-      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-      const mins = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-      const secs = Math.floor((distance % (1000 * 60)) / 1000);
-      timerElement.innerHTML = `${days}d ${hours}h ${mins}m ${secs}s`;
-    }, 1000);
+
+      resultDiv.style.display = "block";
+   }
   </script>
 </body>
 </html>
